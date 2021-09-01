@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
         <link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
         html, body, #map {
             width: 100%;
@@ -25,7 +26,6 @@
         </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
-        <script src="js/leaflet-svg-shape-markers.min.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/leaflet.pattern.js"></script>
         <script src="js/leaflet-hash.js"></script>
@@ -33,33 +33,34 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
-        <script src="data/Merafong_1.js"></script>
-        <script src="data/Rand_West_2.js"></script>
+        <script src="data/Rand_West_1_2_1.js"></script>
+        <script src="data/Merafong_1_2_2.js"></script>
         <script>
-        var highlightLayer;
-        function highlightFeature(e) {
-            highlightLayer = e.target;
-
-            if (e.target.feature.geometry.type === 'LineString') {
-              highlightLayer.setStyle({
-                color: '#00ff51',
-              });
-            } else {
-              highlightLayer.setStyle({
-                fillColor: '#00ff51',
-                fillOpacity: 1
-              });
-            }
-        }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[-26.741001966447502,27.05784112054799],[-26.14298563928192,27.94150017915078]]);
+        })
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
         }
         map.createPane('pane_ESRIWorldTopo_0');
         map.getPane('pane_ESRIWorldTopo_0').style.zIndex = 400;
@@ -74,267 +75,7 @@
         });
         layer_ESRIWorldTopo_0;
         map.addLayer(layer_ESRIWorldTopo_0);
-        function pop_Merafong_1(feature, layer) {
-            layer.on({
-                mouseout: function(e) {
-                    for (i in e.target._eventParents) {
-                        e.target._eventParents[i].resetStyle(e.target);
-                    }
-                },
-                mouseover: highlightFeature,
-            });
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['name'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['color'] !== null ? autolinker.link(feature.properties['color'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['GeoStamp'] !== null ? autolinker.link(feature.properties['GeoStamp'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['GeoCode'] !== null ? autolinker.link(feature.properties['GeoCode'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['GeoAddress'] !== null ? autolinker.link(feature.properties['GeoAddress'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
-            layer.bindPopup(popupContent, {maxHeight: 400});
-        }
-
-        function style_Merafong_1_0(feature) {
-            switch(String(feature.properties['GeoStamp'])) {
-                case 'Blybank':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(128,173,224,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Blyvoor':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(213,73,211,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Carletonville':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(236,240,102,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Deelkraal':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(77,222,82,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Fochville':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(14,223,125,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'GreensPark':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(104,216,220,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Khutsong':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(217,60,136,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Kokosi':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(174,235,120,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Other':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(59,54,206,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Wedela':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(115,15,202,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Welverdiend':
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(235,146,50,1.0)',
-                interactive: false,
-            }
-                    break;
-                default:
-                    return {
-                pane: 'pane_Merafong_1',
-                radius: 4.8,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(214,17,14,1.0)',
-                interactive: false,
-            }
-                    break;
-            }
-        }
-        map.createPane('pane_Merafong_1');
-        map.getPane('pane_Merafong_1').style.zIndex = 401;
-        map.getPane('pane_Merafong_1').style['mix-blend-mode'] = 'normal';
-        var layer_Merafong_1 = new L.geoJson(json_Merafong_1, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_Merafong_1',
-            layerName: 'layer_Merafong_1',
-            pane: 'pane_Merafong_1',
-            onEachFeature: pop_Merafong_1,
-            pointToLayer: function (feature, latlng) {
-                var context = {
-                    feature: feature,
-                    variables: {}
-                };
-                return L.circleMarker(latlng, style_Merafong_1_0(feature));
-            },
-        });
-        var cluster_Merafong_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Merafong_1.addLayer(layer_Merafong_1);
-
-        bounds_group.addLayer(layer_Merafong_1);
-        cluster_Merafong_1.addTo(map);
-        function pop_Rand_West_2(feature, layer) {
-            layer.on({
-                mouseout: function(e) {
-                    for (i in e.target._eventParents) {
-                        e.target._eventParents[i].resetStyle(e.target);
-                    }
-                },
-                mouseover: highlightFeature,
-            });
+        function pop_Rand_West_1_2_1(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
@@ -357,378 +98,264 @@
                     <tr>\
                         <td colspan="2">' + (feature.properties['x'] !== null ? autolinker.link(feature.properties['x'].toLocaleString()) : '') + '</td>\
                     </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ele'] !== null ? autolinker.link(feature.properties['ele'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['time'] !== null ? autolinker.link(feature.properties['time'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['magvar'] !== null ? autolinker.link(feature.properties['magvar'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['geoidheigh'] !== null ? autolinker.link(feature.properties['geoidheigh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cmt'] !== null ? autolinker.link(feature.properties['cmt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['desc'] !== null ? autolinker.link(feature.properties['desc'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['src'] !== null ? autolinker.link(feature.properties['src'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link1_href'] !== null ? autolinker.link(feature.properties['link1_href'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link1_text'] !== null ? autolinker.link(feature.properties['link1_text'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link1_type'] !== null ? autolinker.link(feature.properties['link1_type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link2_href'] !== null ? autolinker.link(feature.properties['link2_href'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link2_text'] !== null ? autolinker.link(feature.properties['link2_text'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link2_type'] !== null ? autolinker.link(feature.properties['link2_type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sym'] !== null ? autolinker.link(feature.properties['sym'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fix'] !== null ? autolinker.link(feature.properties['fix'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sat'] !== null ? autolinker.link(feature.properties['sat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['hdop'] !== null ? autolinker.link(feature.properties['hdop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['vdop'] !== null ? autolinker.link(feature.properties['vdop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['pdop'] !== null ? autolinker.link(feature.properties['pdop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ageofdgpsd'] !== null ? autolinker.link(feature.properties['ageofdgpsd'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['dgpsid'] !== null ? autolinker.link(feature.properties['dgpsid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(feature.properties['path'].toLocaleString()) : '') + '</td>\
+                    </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_Rand_West_2_0(feature) {
-            switch(String(feature.properties['descriptio'])) {
-                case '<p>Latitude: S 26°8\'46,88592"</p><p>Longitude: E 27°37\'29,54928"</p><p>https://maps.google.com/?q=-26.1463572,27.6248748</p><p></p><p>Altitude: 1736 m a.s.l</p><p></p><p>Street: -</p><p>Postcode, City: - </p><p>State: -</p><p>Country: -</p><p></p><p>Da':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
+        function style_Rand_West_1_2_1_0() {
+            return {
+                pane: 'pane_Rand_West_1_2_1',
+                radius: 4.0,
                 opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
+                color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 2.0,
+                weight: 1,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(212,227,138,1.0)',
+                fillColor: 'rgba(114,155,111,1.0)',
                 interactive: false,
-            }
-                    break;
-                case '<p>Latitude: S 26°8\'47,18328"</p><p>Longitude: E 27°37\'28,17012"</p><p>https://maps.google.com/?q=-26.1464398,27.6244917</p><p></p><p>Altitude: 1736 m a.s.l</p><p></p><p>Street: -</p><p>Postcode, City: - </p><p>State: -</p><p>Country: -</p><p></p><p>Da':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(211,117,121,1.0)',
-                interactive: false,
-            }
-                    break;
-                case '<p>Latitude: S 26°8\'48,68808"</p><p>Longitude: E 27°37\'29,24148"</p><p>https://maps.google.com/?q=-26.1468578,27.6247893</p><p></p><p>Altitude: 1736 m a.s.l</p><p></p><p>Street: -</p><p>Postcode, City: - </p><p>State: -</p><p>Country: -</p><p></p><p>Da':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(172,16,224,1.0)',
-                interactive: false,
-            }
-                    break;
-                case '<p>Latitude: S 26°9\'4,1112"</p><p>Longitude: E 27°37\'25,4406"</p><p>https://maps.google.com/?q=-26.151142,27.6237335</p><p></p><p>Altitude: 1759 m a.s.l</p><p></p><p>Street: -</p><p>Postcode, City: - </p><p>State: -</p><p>Country: -</p><p></p><p>Date:':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(230,105,149,1.0)',
-                interactive: false,
-            }
-                    break;
-                case '<p>Latitude: S 26°9\'4,32216"</p><p>Longitude: E 27°37\'24,276"</p><p>https://maps.google.com/?q=-26.1512006,27.62341</p><p></p><p>Altitude: 1748 m a.s.l</p><p></p><p>Street: -</p><p>Postcode, City: - </p><p>State: -</p><p>Country: -</p><p></p><p>Date: 2':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(89,109,219,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Aureus':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(234,156,61,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Dennydale':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(151,224,67,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Elands/Sungate':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(97,145,202,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Finsburyi':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(12,209,199,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Helikon':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(212,197,110,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Hillside':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(200,88,195,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Kocksoord/Middlevlei':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(157,97,231,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Other':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(206,132,107,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Randfontein':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(15,239,97,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Randgate':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(90,179,208,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Venterspos':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(131,211,107,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Vleikop/Rikasrus':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(236,90,185,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Westonaria':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(62,214,72,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Wheatlands':
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(137,239,205,1.0)',
-                interactive: false,
-            }
-                    break;
-                default:
-                    return {
-                pane: 'pane_Rand_West_2',
-                shape: 'diamond',
-                radius: 5.6,
-                opacity: 1,
-                color: 'rgba(50,87,128,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(50,20,224,1.0)',
-                interactive: false,
-            }
-                    break;
             }
         }
-        map.createPane('pane_Rand_West_2');
-        map.getPane('pane_Rand_West_2').style.zIndex = 402;
-        map.getPane('pane_Rand_West_2').style['mix-blend-mode'] = 'normal';
-        var layer_Rand_West_2 = new L.geoJson(json_Rand_West_2, {
+        map.createPane('pane_Rand_West_1_2_1');
+        map.getPane('pane_Rand_West_1_2_1').style.zIndex = 401;
+        map.getPane('pane_Rand_West_1_2_1').style['mix-blend-mode'] = 'normal';
+        var layer_Rand_West_1_2_1 = new L.geoJson(json_Rand_West_1_2_1, {
             attribution: '',
             interactive: false,
-            dataVar: 'json_Rand_West_2',
-            layerName: 'layer_Rand_West_2',
-            pane: 'pane_Rand_West_2',
-            onEachFeature: pop_Rand_West_2,
+            dataVar: 'json_Rand_West_1_2_1',
+            layerName: 'layer_Rand_West_1_2_1',
+            pane: 'pane_Rand_West_1_2_1',
+            onEachFeature: pop_Rand_West_1_2_1,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.shapeMarker(latlng, style_Rand_West_2_0(feature));
+                return L.circleMarker(latlng, style_Rand_West_1_2_1_0(feature));
             },
         });
-        var cluster_Rand_West_2 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+        var cluster_Rand_West_1_2_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
             spiderfyDistanceMultiplier: 2});
-        cluster_Rand_West_2.addLayer(layer_Rand_West_2);
+        cluster_Rand_West_1_2_1.addLayer(layer_Rand_West_1_2_1);
 
-        bounds_group.addLayer(layer_Rand_West_2);
-        cluster_Rand_West_2.addTo(map);
+        bounds_group.addLayer(layer_Rand_West_1_2_1);
+        cluster_Rand_West_1_2_1.addTo(map);
+        function pop_Merafong_1_2_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['color'] !== null ? autolinker.link(feature.properties['color'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GeoStamp'] !== null ? autolinker.link(feature.properties['GeoStamp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GeoCode'] !== null ? autolinker.link(feature.properties['GeoCode'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GeoAddress'] !== null ? autolinker.link(feature.properties['GeoAddress'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ele'] !== null ? autolinker.link(feature.properties['ele'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['time'] !== null ? autolinker.link(feature.properties['time'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['magvar'] !== null ? autolinker.link(feature.properties['magvar'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['geoidheigh'] !== null ? autolinker.link(feature.properties['geoidheigh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cmt'] !== null ? autolinker.link(feature.properties['cmt'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['desc'] !== null ? autolinker.link(feature.properties['desc'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['src'] !== null ? autolinker.link(feature.properties['src'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link1_href'] !== null ? autolinker.link(feature.properties['link1_href'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link1_text'] !== null ? autolinker.link(feature.properties['link1_text'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link1_type'] !== null ? autolinker.link(feature.properties['link1_type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link2_href'] !== null ? autolinker.link(feature.properties['link2_href'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link2_text'] !== null ? autolinker.link(feature.properties['link2_text'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['link2_type'] !== null ? autolinker.link(feature.properties['link2_type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sym'] !== null ? autolinker.link(feature.properties['sym'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fix'] !== null ? autolinker.link(feature.properties['fix'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sat'] !== null ? autolinker.link(feature.properties['sat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['hdop'] !== null ? autolinker.link(feature.properties['hdop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['vdop'] !== null ? autolinker.link(feature.properties['vdop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['pdop'] !== null ? autolinker.link(feature.properties['pdop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ageofdgpsd'] !== null ? autolinker.link(feature.properties['ageofdgpsd'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['dgpsid'] !== null ? autolinker.link(feature.properties['dgpsid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['x'] !== null ? autolinker.link(feature.properties['x'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['y'] !== null ? autolinker.link(feature.properties['y'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(feature.properties['path'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Merafong_1_2_2_0() {
+            return {
+                pane: 'pane_Merafong_1_2_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,113,141,1.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_Merafong_1_2_2');
+        map.getPane('pane_Merafong_1_2_2').style.zIndex = 402;
+        map.getPane('pane_Merafong_1_2_2').style['mix-blend-mode'] = 'normal';
+        var layer_Merafong_1_2_2 = new L.geoJson(json_Merafong_1_2_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Merafong_1_2_2',
+            layerName: 'layer_Merafong_1_2_2',
+            pane: 'pane_Merafong_1_2_2',
+            onEachFeature: pop_Merafong_1_2_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Merafong_1_2_2_0(feature));
+            },
+        });
+        var cluster_Merafong_1_2_2 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Merafong_1_2_2.addLayer(layer_Merafong_1_2_2);
+
+        bounds_group.addLayer(layer_Merafong_1_2_2);
+        cluster_Merafong_1_2_2.addTo(map);
         setBounds();
         </script>
     </body>
